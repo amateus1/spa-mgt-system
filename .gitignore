@@ -1,0 +1,40 @@
+# === Project-specific ===
+backups/
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# === Virtual Environments ===
+.env
+.venv/
+venv/
+ENV/
+env.bak/
+.envrc
+
+# === IDE / Editor ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === OS Files ===
+.DS_Store
+Thumbs.db
+
+# === Streamlit ===
+.streamlit/secrets.toml
+.streamlit/config.toml
+
+# === Logs ===
+*.log
+logs/
