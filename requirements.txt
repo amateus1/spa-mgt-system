@@ -1,5 +1,5 @@
 streamlit==1.22.0
 boto3==1.28.62
 streamlit-drawable-canvas==0.9.3
-pandas==1.3.5  # Very old, very stable, guaranteed pre-compiled wheel
+pandas>=2.0.0
 python-dateutil==2.8.2
