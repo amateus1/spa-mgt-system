@@ -152,7 +152,7 @@ class AWSClient:
                 Key={'card_id': card_id},
                 UpdateExpression='SET balance = balance + :val',
                 # ExpressionAttributeValues={':val': amount},
-                ExpressionAttributeValues={':val': Decimal(str(amount))}
+                ExpressionAttributeValues={':val': Decimal(str(amount))},
                 ReturnValues='UPDATED_NEW'
             )
             return response.get('Attributes', {}).get('balance', None)
