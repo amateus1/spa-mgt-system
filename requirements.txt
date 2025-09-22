@@ -1,5 +1,5 @@
 streamlit==1.22.0
 boto3==1.28.62
 streamlit-drawable-canvas==0.9.3
-pandas==2.0.3
+pandas==1.5.3  # <-- CHANGE THIS: Use an older, pre-compiled version
 python-dateutil==2.8.2
