@@ -1,8 +1,33 @@
 import streamlit as st
-from streamlit_signature_canvas import signature_canvas
+from streamlit_drawable_canvas import st_canvas
 from aws_utils import AWSClient
 import pandas as pd
 from datetime import datetime
+
+# --- SIMPLE PASSWORD AUTHENTICATION ---
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+
+# If not authenticated, show login form
+if not st.session_state.authenticated:
+    st.title("水疗中心会员管理系统")
+    login_placeholder = st.empty()
+    with login_placeholder.form("login"):
+        st.write("请输入密码访问系统")
+        password = st.text_input("密码", type="password")
+        submit_login = st.form_submit_button("登录")
+
+        if submit_login:
+            # Check against password stored in Streamlit secrets
+            if password == st.secrets.get("APP_PASSWORD", "default_password"):
+                st.session_state.authenticated = True
+                st.rerun()
+            else:
+                st.error("密码不正确")
+    # Stop execution if not authenticated
+    st.stop()
+
+# --- If authenticated, continue with the rest of the app ---
 
 # 页面配置
 st.set_page_config(
@@ -263,7 +288,24 @@ elif page == "管理交易":
             # Only require signature for charges, not top-ups
             if transaction_type == "消费扣款":
                 st.write("客户签名:")
-                signature = signature_canvas(label="", key="signature_canvas")
+                # REPLACED: Using streamlit-drawable-canvas instead of streamlit-signature-canvas
+                canvas_result = st_canvas(
+                    fill_color="rgba(255, 165, 0, 0.3)",
+                    stroke_width=2,
+                    stroke_color="#000000",
+                    background_color="#ffffff",
+                    height=150,
+                    width=400,
+                    drawing_mode="freedraw",
+                    key="signature_canvas",
+                    display_toolbar=False
+                )
+                
+                # Check if signature was drawn
+                if canvas_result.image_data is not None:
+                    signature = canvas_result
+                else:
+                    signature = None
             else:
                 signature = None # No signature for top-ups
                 

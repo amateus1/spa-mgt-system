@@ -1,5 +1,5 @@
 streamlit==1.22.0
 boto3==1.28.62
-streamlit-signature-canvas==0.1.2
+streamlit-drawable-canvas==0.9.3
 pandas==2.0.3
 python-dateutil==2.8.2
