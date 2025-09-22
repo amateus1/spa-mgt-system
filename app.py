@@ -277,10 +277,10 @@ elif page == "管理交易":
         with st.form("transaction_form"):
             # Change label and min_value based on type
             if transaction_type == "消费扣款":
-                amount = st.number_input("消费金额", min_value=0.01, step=50.0, value=0.0)
+                amount = st.number_input("消费金额", min_value=0.01, step=50.0, value=50.0)
                 amount = -abs(amount)  # Ensure amount is negative for charges
             else: # 余额充值
-                amount = st.number_input("充值金额", min_value=0.01, step=100.0, value=0.0)
+                amount = st.number_input("充值金额", min_value=0.01, step=100.0, value=100.0)
                 amount = abs(amount)  # Ensure amount is positive for top-ups
                 
             service_notes = st.text_input("备注（可选）")
