@@ -2,6 +2,8 @@ import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
 import uuid
 from datetime import datetime
+from decimal import Decimal
+
 
 class AWSClient:
     """
@@ -80,7 +82,8 @@ class AWSClient:
                 'card_id': card_id,
                 'name': name,
                 'top_up_date': top_up_date,
-                'balance': balance,
+                # 'balance': balance,
+                'balance': Decimal(str(balance)),
                 'created_at': datetime.now().isoformat()
             })
             return True
@@ -106,7 +109,8 @@ class AWSClient:
                 ExpressionAttributeValues={
                     ':name': name,
                     ':date': top_up_date,
-                    ':balance': balance
+                    #':balance': balance
+                    ':balance': Decimal(str(balance))
                 },
                 ExpressionAttributeNames={'#n': 'name'}
             )
@@ -147,7 +151,8 @@ class AWSClient:
             response = table.update_item(
                 Key={'card_id': card_id},
                 UpdateExpression='SET balance = balance + :val',
-                ExpressionAttributeValues={':val': amount},
+                # ExpressionAttributeValues={':val': amount},
+                ExpressionAttributeValues={':val': Decimal(str(amount))}
                 ReturnValues='UPDATED_NEW'
             )
             return response.get('Attributes', {}).get('balance', None)
@@ -162,7 +167,8 @@ class AWSClient:
             table.put_item(Item={
                 'transaction_id': transaction_id,
                 'member_id': member_id,
-                'amount': amount,
+                'amount': Decimal(str(amount)),
+                #'amount': amount,
                 'timestamp': datetime.now().isoformat(),
                 'signature_s3_key': signature_key,
                 'service_notes': service_notes
