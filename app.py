@@ -318,13 +318,13 @@ elif page == "管理交易":
                     if st.session_state.members_table and st.session_state.transactions_table:
                         signature_key = None
                         # Only process signature if it's a charge and signature exists
-                        if transaction_type == "消费扣款" and signature and getattr(signature, "image_data", None) is not None:
-                        # if transaction_type == "消费扣款" and signature and signature.image_data:
+                        if transaction_type == "消费扣款" and signature is not None and signature.image_data is not None:
                             signature_key = st.session_state.aws_client.upload_signature(
                                 st.secrets["S3_BUCKET_NAME"],
-                                signature["image_data"],
+                                signature.image_data,
                                 member['card_id']
                             )
+
                         
                         transaction_id = st.session_state.aws_client.add_transaction(
                             st.session_state.transactions_table,
