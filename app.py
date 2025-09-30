@@ -319,11 +319,34 @@ elif page == "管理交易":
                         signature_key = None
                         # Only process signature if it's a charge and signature exists
                         if transaction_type == "消费扣款" and signature is not None and signature.image_data is not None:
+                            # Convert numpy array to base64 for S3 upload
+                            import base64
+                            from io import BytesIO
+                            from PIL import Image
+                            
+                            # Convert numpy array to PNG bytes, then to base64
+                            img = Image.fromarray(signature.image_data.astype('uint8'), 'RGBA')
+                            buffered = BytesIO()
+                            img.save(buffered, format="PNG")
+                            img_base64 = base64.b64encode(buffered.getvalue()).decode()
+                            
                             signature_key = st.session_state.aws_client.upload_signature(
                                 st.secrets["S3_BUCKET_NAME"],
-                                signature.image_data,
+                                img_base64,  # ← Now passing proper base64 string
                                 member['card_id']
                             )
+                            # Debug confirmation - ADDED HERE
+                            if signature_key:
+                                st.success(f"✓ 签名已保存到 S3: {signature_key}")
+                            else:
+                                st.error("✗ 签名保存失败")
+
+                        #if transaction_type == "消费扣款" and signature is not None and signature.image_data is not None:
+                        #    signature_key = st.session_state.aws_client.upload_signature(
+                        #        st.secrets["S3_BUCKET_NAME"],
+                        #        signature.image_data,
+                        #        member['card_id']
+                        #    )
 
                         
                         transaction_id = st.session_state.aws_client.add_transaction(
