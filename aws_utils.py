@@ -195,6 +195,10 @@ class AWSClient:
                     ExclusiveStartKey=response['LastEvaluatedKey']
                 )
                 all_transactions.extend(response.get('Items', []))
+            # TEMPORARY DEBUG - ADD THIS
+            print(f"DEBUG: Retrieved {len(all_transactions)} transactions for member {member_id}")
+            for i, t in enumerate(all_transactions):
+                print(f"  Transaction {i}: {t.get('timestamp')} - {t.get('amount')}")
                 
             return all_transactions
         except ClientError as e:
