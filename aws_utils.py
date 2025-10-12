@@ -161,14 +161,15 @@ class AWSClient:
             return None
     
     def add_transaction(self, table, member_id, amount, signature_key=None, service_notes=None):
-        """Add a new transaction record."""
         try:
-            transaction_id = str(uuid.uuid4())
+            # Ensure unique transaction ID with timestamp
+            import time
+            transaction_id = f"{uuid.uuid4()}-{int(time.time()*1000)}"
+            
             table.put_item(Item={
                 'transaction_id': transaction_id,
                 'member_id': member_id,
                 'amount': Decimal(str(amount)),
-                #'amount': amount,
                 'timestamp': datetime.now().isoformat(),
                 'signature_s3_key': signature_key,
                 'service_notes': service_notes
