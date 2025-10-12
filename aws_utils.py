@@ -196,9 +196,10 @@ class AWSClient:
                 )
                 all_transactions.extend(response.get('Items', []))
             # TEMPORARY DEBUG - ADD THIS
-            print(f"DEBUG: Retrieved {len(all_transactions)} transactions for member {member_id}")
-            for i, t in enumerate(all_transactions):
-                print(f"  Transaction {i}: {t.get('timestamp')} - {t.get('amount')}")
+            st.write("🔍 DEBUG: 原始交易数据")
+            st.write(f"检索到的交易数量: {len(transactions)}")
+            for i, t in enumerate(transactions):
+                st.write(f"交易 {i}: 时间 {t.get('timestamp')} - 金额 {t.get('amount')} - 项目 {t.get('service_notes', 'N/A')}")           
                 
             return all_transactions
         except ClientError as e:
