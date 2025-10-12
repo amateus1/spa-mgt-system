@@ -356,6 +356,8 @@ elif page == "管理交易":
                             signature_key,
                             service_notes
                         )
+                        # ADD THIS DEBUG LINE
+                        st.info(f"✅ 交易创建成功 - 交易ID: {transaction_id}")
                         
                         if transaction_id:
                             new_balance = st.session_state.aws_client.update_member_balance(
