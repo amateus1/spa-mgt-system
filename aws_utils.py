@@ -179,27 +179,27 @@ class AWSClient:
             return None
   
     def get_member_transactions(self, table, member_id):
-    try:
-        all_transactions = []
-        response = table.query(
-            IndexName='member_id-index',
-            KeyConditionExpression=boto3.dynamodb.conditions.Key('member_id').eq(member_id)
-        )
-        all_transactions.extend(response.get('Items', []))
-        
-        # Handle pagination if there are more results
-        while 'LastEvaluatedKey' in response:
+        try:
+            all_transactions = []
             response = table.query(
                 IndexName='member_id-index',
-                KeyConditionExpression=boto3.dynamodb.conditions.Key('member_id').eq(member_id),
-                ExclusiveStartKey=response['LastEvaluatedKey']
+                KeyConditionExpression=boto3.dynamodb.conditions.Key('member_id').eq(member_id)
             )
             all_transactions.extend(response.get('Items', []))
             
-        return all_transactions
-    except ClientError as e:
-        print(f"Error getting transactions: {e}")
-        return []
+            # Handle pagination if there are more results
+            while 'LastEvaluatedKey' in response:
+                response = table.query(
+                    IndexName='member_id-index',
+                    KeyConditionExpression=boto3.dynamodb.conditions.Key('member_id').eq(member_id),
+                    ExclusiveStartKey=response['LastEvaluatedKey']
+                )
+                all_transactions.extend(response.get('Items', []))
+                
+            return all_transactions
+        except ClientError as e:
+            print(f"Error getting transactions: {e}")
+            return []
     
     def upload_signature(self, bucket_name, signature_data, member_id):
         """Process and upload a signature image to S3."""
