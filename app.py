@@ -370,7 +370,7 @@ elif page == "管理交易":
                                 action = "扣款" if amount < 0 else "充值"
                                 st.success(f"{action}成功! 新余额: ￥{new_balance:.2f}")
                                 st.session_state.current_member['balance'] = new_balance
-                                st.rerun()
+                                # st.rerun()
                             else:
                                 st.error("更新会员余额失败")
                         else:
