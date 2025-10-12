@@ -66,7 +66,8 @@ if 'members_table' not in st.session_state:
 
 if 'transactions_table' not in st.session_state:
     if st.session_state.aws_client:
-        st.session_state.transactions_table = st.session_state.aws_client.create_transactions_table()
+        # Use new table structure
+        st.session_state.transactions_table = st.session_state.aws_client.create_transactions_table('spa-transactions-v2')
     else:
         st.session_state.transactions_table = None
 

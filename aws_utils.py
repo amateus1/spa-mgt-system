@@ -51,21 +51,19 @@ class AWSClient:
                 return self.dynamodb.Table(table_name)
             raise e
     
-    def create_transactions_table(self, table_name='spa-transactions'):
+    def create_transactions_table(self, table_name='spa-transactions-v2'):
         """Create the Transactions table in DynamoDB if it doesn't exist."""
         try:
             table = self.dynamodb.create_table(
                 TableName=table_name,
-                KeySchema=[{'AttributeName': 'transaction_id', 'KeyType': 'HASH'}],
-                AttributeDefinitions=[
-                    {'AttributeName': 'transaction_id', 'AttributeType': 'S'},
-                    {'AttributeName': 'member_id', 'AttributeType': 'S'}
+                KeySchema=[
+                    {'AttributeName': 'member_id', 'KeyType': 'HASH'},      # Partition Key
+                    {'AttributeName': 'transaction_id', 'KeyType': 'RANGE'} # Sort Key
                 ],
-                GlobalSecondaryIndexes=[{
-                    'IndexName': 'member_id-index',
-                    'KeySchema': [{'AttributeName': 'member_id', 'KeyType': 'HASH'}],
-                    'Projection': {'ProjectionType': 'ALL'}
-                }],
+                AttributeDefinitions=[
+                    {'AttributeName': 'member_id', 'AttributeType': 'S'},
+                    {'AttributeName': 'transaction_id', 'AttributeType': 'S'}
+                ],
                 BillingMode='PAY_PER_REQUEST'
             )
             table.meta.client.get_waiter('table_exists').wait(TableName=table_name)
@@ -180,24 +178,12 @@ class AWSClient:
             return None
   
     def get_member_transactions(self, table, member_id):
+        """Retrieve all transactions for a specific member."""
         try:
-            all_transactions = []
             response = table.query(
-                IndexName='member_id-index',
                 KeyConditionExpression=boto3.dynamodb.conditions.Key('member_id').eq(member_id)
             )
-            all_transactions.extend(response.get('Items', []))
-            
-            # Handle pagination if there are more results
-            while 'LastEvaluatedKey' in response:
-                response = table.query(
-                    IndexName='member_id-index',
-                    KeyConditionExpression=boto3.dynamodb.conditions.Key('member_id').eq(member_id),
-                    ExclusiveStartKey=response['LastEvaluatedKey']
-                )
-                all_transactions.extend(response.get('Items', []))
-                           
-            return all_transactions
+            return response.get('Items', [])
         except ClientError as e:
             print(f"Error getting transactions: {e}")
             return []
