@@ -397,7 +397,7 @@ elif page == "查看历史记录":
             )
             # ADD DEBUG HERE (in app.py):
             # st.write("🔍 DEBUG: 原始交易数据")
-            $ st.write(f"检索到的交易数量: {len(transactions)}")
+            # st.write(f"检索到的交易数量: {len(transactions)}")
             for i, t in enumerate(transactions):
                 st.write(f"交易 {i}: 时间 {t.get('timestamp')} - 金额 {t.get('amount')} - 项目 {t.get('service_notes', 'N/A')}")
             if transactions:
